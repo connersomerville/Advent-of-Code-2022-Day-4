@@ -1,4 +1,4 @@
-import { rangesInclusive } from "./intersect.js";
+import { rangesIntersect } from "./intersect.js";
 import { getLineReader } from "./reader.js";
 
 const args = process.argv.slice(2);
@@ -8,7 +8,7 @@ const lineReader = getLineReader({
   filePath,
 });
 
-let encapsulatedPairs = 0;
+let intersectingPairs = 0;
 
 lineReader.on("line", (line) => {
   const [elfOneRange, elfTwoRange] = line.split(",");
@@ -16,7 +16,7 @@ lineReader.on("line", (line) => {
   const [elfTwoStart, elfTwoEnd] = elfTwoRange.split("-");
 
   if (
-    rangesInclusive({
+    rangesIntersect({
       rangeOne: {
         start: Number(elfOneStart),
         end: Number(elfOneEnd),
@@ -27,10 +27,10 @@ lineReader.on("line", (line) => {
       },
     })
   ) {
-    encapsulatedPairs += 1;
+    intersectingPairs += 1;
   }
 });
 
 lineReader.on("close", () => {
-  console.log(`Found ${encapsulatedPairs} pairs that entirely overlap`);
+  console.log(`Found ${intersectingPairs} pairs that intersect`);
 });
